@@ -14,7 +14,8 @@ PATH_INCLUDE =	-Iinclude \
 PATH_LIBRARIES = -Lextlib/lib/x64
 
 #lister les fichiers à compiler
-OBJ_FILES = $(PATH_OBJ)/main.o
+OBJ_FILES = $(PATH_OBJ)/main.o \
+			$(PATH_OBJ)/imageProcess.o
 
 GCC_OPTS = -std=c++11 -Wall
 

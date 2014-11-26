@@ -1,5 +1,6 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include <imageProcess.hpp>
 
 int main(int argc, char* argv[])
 {
@@ -10,12 +11,14 @@ int main(int argc, char* argv[])
 	}
 	else
 		image.create(128,128,sf::Color::Green);
+
+	sf::Image binary = repairWellCompose(binarize(image, 127));
 	
 	if(argc > 2)
 	{
-		image.saveToFile(std::string(argv[2]));
+		binary.saveToFile(std::string(argv[2]));
 	}
 	else
-		image.saveToFile("bin/out.png");
+		binary.saveToFile("bin/out.png");
 	return 0;
 }
