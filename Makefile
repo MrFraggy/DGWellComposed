@@ -5,7 +5,7 @@ PATH_OBJ = obj
 
 LIBRARIES = -lsfml-graphics \
 			-lsfml-system \
-			-lsfml-window
+			-lsfml-window \
 
 
 PATH_INCLUDE =	-Iinclude \
