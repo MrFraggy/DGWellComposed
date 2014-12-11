@@ -1,5 +1,8 @@
 #include <imageProcess.hpp>
+#include <listener.hpp>
 #include <iostream>
+
+std::vector<Listener*> listeners;
 
 sf::Image binarize(const sf::Image& im, unsigned char treshold)
 {
@@ -25,7 +28,43 @@ sf::Image binarize(const sf::Image& im, unsigned char treshold)
 sf::Image repairWellCompose(const sf::Image& im)
 {
     // repair
-	return im;
+    sf::Image out = im;
+    sf::Color pattern1[4] = {sf::Color::Black, sf::Color::White, sf::Color::Black, sf::Color::White};
+    sf::Color pattern2[4] = {sf::Color::White, sf::Color::Black, sf::Color::White, sf::Color::Black};
+    sf::Color patternTest[4];
+
+    for(auto l: listeners)
+        l->setMaskSize({2,2});
+
+    for(unsigned int i = 0; i<out.getSize().x-1 ; ++i)
+    {
+        for(unsigned int j = 0; j<out.getSize().y-1; ++j)
+        {
+            for(auto l: listeners)
+        l->setMaskPosition({i,j});
+
+            patternTest[0] = out.getPixel(i,j);
+            patternTest[1] = out.getPixel(i+1,j);
+            patternTest[2] = out.getPixel(i+1,j+1);
+            patternTest[3] = out.getPixel(i,j+1);
+ 
+            if (patternTest[0]==pattern1[0] && patternTest[1]==pattern1[1] && patternTest[2]==pattern1[2] && patternTest[3]==pattern1[3])
+            {
+            	out.setPixel(i+1,j+1, sf::Color::White);
+
+                for(auto l: listeners)
+        l->setImageModified(out, sf::Vector2ui(i+1,j+1));
+            }
+            else if (patternTest[0]==pattern2[0] && patternTest[1]==pattern2[1] && patternTest[2]==pattern2[2] && patternTest[3]==pattern2[3])
+            {
+            	out.setPixel(i+1,j+1, sf::Color::Black);
+
+                for(auto l: listeners)
+                    l->setImageModified(out, sf::Vector2ui(i+1,j+1));
+            }
+        }
+    }
+	return out;
 }
 
 bool isWellComposed(const sf::Image& im)
@@ -41,21 +80,26 @@ bool isWellComposed(const sf::Image& im)
         {
             patternTest[0] = im.getPixel(i,j);
             patternTest[1] = im.getPixel(i+1,j);
-            patternTest[2] = im.getPixel(i,j+1);
-            patternTest[3] = im.getPixel(i+1,j+1);
+            patternTest[2] = im.getPixel(i+1,j+1);
+            patternTest[3] = im.getPixel(i,j+1);
 
             if (patternTest[0]==pattern1[0] && patternTest[1]==pattern1[1] && patternTest[2]==pattern1[2] && patternTest[3]==pattern1[3])
             {
-                std::cout << "not well composed at : (" << i << ","<< j << ");" << std::endl;
+                std::cout << "1 not well composed at : (" << i << ","<< j << ");" << std::endl;
                 return false;
             }
             else if (patternTest[0]==pattern2[0] && patternTest[1]==pattern2[1] && patternTest[2]==pattern2[2] && patternTest[3]==pattern2[3])
             {
-                std::cout << "not well composed at : (" << i << ","<< j << ");" << std::endl;
+                std::cout << "2 not well composed at : (" << i << ","<< j << ");" << std::endl;
                 return false;
             }
         }
     }
 
     return true;
+}
+
+void addListener(Listener* l)
+{
+    listeners.push_back(l);
 }
