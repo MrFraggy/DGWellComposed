@@ -11,9 +11,12 @@ class Viewer: public Listener
 public:
 	Viewer(sf::Image& image) : 
 		image(image), 
-		window(sf::VideoMode(800,600, 32), "Non well-composed image repair viewer")
+		window(sf::VideoMode(image.getSize().x,image.getSize().y, 32), "Non well-composed image repair viewer")
 	{
 		window.setVerticalSyncEnabled(true);
+		CurrentImage.image = image;
+		CurrentImage.pixel.x = 0;
+		CurrentImage.pixel.y = 0;
 		texture.create(image.getSize().x, image.getSize().y);
 		texture.update(image);
 	}
@@ -23,6 +26,8 @@ public:
 		window.clear();
 		{
 			std::lock_guard<std::mutex> lk(listenerMutex);
+			CurrentImage.image.setPixel(Mask.pos.x, Mask.pos.y, sf::Color::Red);
+			texture.update(CurrentImage.image);
 			sf::Sprite sprite(texture);
 			window.draw(sprite);
 		}
@@ -43,8 +48,8 @@ protected:
 	void onImageModified()
 	{
 		//std::cout << "modified: " << CurrentImage.pixel.x << " " << CurrentImage.pixel.y << std::endl;
-		CurrentImage.image.setPixel(CurrentImage.pixel.x, CurrentImage.pixel.y, sf::Color::Red);
-		texture.update(CurrentImage.image);
+		//CurrentImage.image.setPixel(CurrentImage.pixel.x, CurrentImage.pixel.y, sf::Color::Red);
+		//texture.update(CurrentImage.image);
 		//display();
 		//sleep(1);
 	}
@@ -55,6 +60,7 @@ protected:
 	sf::RenderWindow window;
 	sf::Texture texture;
 };
+
 int main(int argc, char* argv[])
 {
     // Get image
@@ -93,6 +99,7 @@ int main(int argc, char* argv[])
     	}
     	viewer->display();
     }
+
     repairingthread.join();
     // Save image
 	if(argc > 2)

@@ -22,9 +22,12 @@ public:
 
 	void setMaskPosition(const sf::Vector2ui& pos)
 	{
-		std::lock_guard<std::mutex> lk(listenerMutex);
-		Mask.pos = pos;
-		onMaskModified();
+		{
+			std::lock_guard<std::mutex> lk(listenerMutex);
+			Mask.pos = pos;
+			onMaskModified();
+		}
+		std::this_thread::sleep_for(std::chrono::milliseconds(500));
 	}
 
 	void setMaskSize(const sf::Vector2ui& size)
@@ -43,7 +46,7 @@ public:
 			onImageModified();
 		}
 
-		std::this_thread::sleep_for(std::chrono::seconds(5));
+		//std::this_thread::sleep_for(std::chrono::seconds(5));
 	}
 
 protected:
