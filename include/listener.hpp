@@ -6,7 +6,9 @@
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
 #include <mutex>
-
+#include <thread>
+#include <chrono>
+#include <iostream>
 
 namespace sf
 {
@@ -40,7 +42,8 @@ public:
 			CurrentImage.pixel = pos;
 			onImageModified();
 		}
-		//sleep(5);
+
+		std::this_thread::sleep_for(std::chrono::seconds(5));
 	}
 
 protected:

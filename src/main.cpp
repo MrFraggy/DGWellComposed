@@ -11,7 +11,7 @@ class Viewer: public Listener
 public:
 	Viewer(sf::Image& image) : 
 		image(image), 
-		window(sf::VideoMode(image.getSize().x,image.getSize().y, 32), "Non well-composed image repair viewer")
+		window(sf::VideoMode(800,600, 32), "Non well-composed image repair viewer")
 	{
 		window.setVerticalSyncEnabled(true);
 		texture.create(image.getSize().x, image.getSize().y);
@@ -70,6 +70,7 @@ int main(int argc, char* argv[])
 
 	std::unique_ptr<Viewer> viewer(new Viewer(image));
 	addListener(viewer.get());
+
     // Processing
     std::thread repairingthread([&](){
     	if(!isWellComposed(image))
