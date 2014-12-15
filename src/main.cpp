@@ -13,12 +13,14 @@ public:
 		image(image), 
 		window(sf::VideoMode(image.getSize().x,image.getSize().y, 32), "Non well-composed image repair viewer")
 	{
-		window.setVerticalSyncEnabled(true);
+		//window.setVerticalSyncEnabled(true);
+
 		CurrentImage.image = image;
 		CurrentImage.pixel.x = 0;
 		CurrentImage.pixel.y = 0;
 		texture.create(image.getSize().x, image.getSize().y);
 		texture.update(image);
+		window.setSize({800,600});
 	}
 
 	void display()
@@ -54,8 +56,11 @@ protected:
 		//sleep(1);
 	}
 
-	void onMaskModified() {}
-
+	void onMaskModified() 
+	{
+		//std::cout << Mask.pos.x << " " << Mask.pos.y << std::endl;
+	}
+//ok gros
 	sf::Image& image;
 	sf::RenderWindow window;
 	sf::Texture texture;
@@ -82,7 +87,8 @@ int main(int argc, char* argv[])
     	if(!isWellComposed(image))
 	    {
 	    	binary = repairWellCompose(image);
-	    }
+	    } else
+	    	std::cout << "Well composed!" << std::endl;
     });
     
     bool bQuit = false;

@@ -20,34 +20,11 @@ class Listener
 public:
 	virtual ~Listener() {};
 
-	void setMaskPosition(const sf::Vector2ui& pos)
-	{
-		{
-			std::lock_guard<std::mutex> lk(listenerMutex);
-			Mask.pos = pos;
-			onMaskModified();
-		}
-		std::this_thread::sleep_for(std::chrono::milliseconds(500));
-	}
+	void setMaskPosition(const sf::Vector2ui& pos);
 
-	void setMaskSize(const sf::Vector2ui& size)
-	{
-		std::lock_guard<std::mutex> lk(listenerMutex);
-		Mask.size = size;
-		onMaskModified();
-	}
+	void setMaskSize(const sf::Vector2ui& size);
 
-	void setImageModified(const sf::Image& image, const sf::Vector2ui& pos)
-	{
-		{
-			std::lock_guard<std::mutex> lk(listenerMutex);
-			CurrentImage.image = image;
-			CurrentImage.pixel = pos;
-			onImageModified();
-		}
-
-		//std::this_thread::sleep_for(std::chrono::seconds(5));
-	}
+	void setImageModified(const sf::Image& image, const sf::Vector2ui& pos);
 
 protected:
 	virtual void onMaskModified() = 0;
