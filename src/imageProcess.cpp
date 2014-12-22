@@ -42,7 +42,7 @@ sf::Image repairWellComposeNaive(const sf::Image& im)
         for(unsigned int i = 0; i<out.getSize().x-1 ; ++i)
         {
             for(auto l: listeners)
-                l->setMaskPosition({i,j});
+                l->setMaskPosition({(int)i,(int)j});
 
             patternTest[0] = out.getPixel(i,j);
             patternTest[1] = out.getPixel(i+1,j);
@@ -61,7 +61,7 @@ sf::Image repairWellComposeNaive(const sf::Image& im)
             }
 
              for(auto l: listeners)
-                    l->setImageModified(out, sf::Vector2i(i+1,j+1));
+                    l->setImageModified(out, {(int)i+1,(int)j+1});
 
             if(bStopped)
                 return out;
@@ -132,7 +132,7 @@ sf::Image repairWellCompose3x3(const sf::Image& im)
         for(unsigned int i = 0; i<out.getSize().x-1 ; ++i)
         {
             for(auto l: listeners)
-                l->setMaskPosition({i,j});
+                l->setMaskPosition({(int)i,(int)j});
 
             // Check all mask 3*3
             if(mask33_a.compare(out, i, j))
@@ -202,7 +202,7 @@ sf::Image repairWellCompose3x3(const sf::Image& im)
             }
 
             for(auto l: listeners)
-                    l->setImageModified(out, {i+1,j+1});
+                    l->setImageModified(out, {(int)i+1,(int)j+1});
         }
     }
     return out;
