@@ -16,6 +16,7 @@ Mask::Mask(std::initializer_list<Cell> list) : colors(list)
 bool Mask::compare(const sf::Image& image, int x, int y)
 {
 	int necessary = 0;
+	int necessaryActived = 0;
 
 	for(int i = 0; i < size; ++i)
 	{
@@ -29,24 +30,22 @@ bool Mask::compare(const sf::Image& image, int x, int y)
 			if(c.first == CellType::Enabled)
 			{
 				if(image.getPixel(x + i, y + j) != c.second)
-				{
 					return false;
-				}
 			}
-
-			if(c.first == CellType::Necessary)
-				if(image.getPixel(i, j) != c.second)
-					necessary++;
+			else if(c.first == CellType::Necessary)
+			{
+				necessary++;
+				if(image.getPixel(x + i, y + j) != c.second)
+					necessaryActived++;
+			}
 		}
 	}
 
-	if(necessary < 1)
+	if(necessary > 0 && necessaryActived < 1)
 	{
-		std::cout << "compare false necessary" << std::endl;
 		return false;
 	}
 
-	std::cout << "compare truuuuuuuuuuuuuuuuueeeeeeeeeeeeeeeeeeeeeeeeeeeee" << std::endl;
 	return true;
 }
 
