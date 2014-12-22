@@ -21,15 +21,17 @@ bool Mask::compare(const sf::Image& image, int x, int y)
 	{
 		for(int j = 0; j < size; ++j)
 		{
-			if(	x + i >= (int)image.getSize().x || y + j >= (int)image.getSize().y)
+			if(	x + i >= (int)image.getSize().x || y + j >= (int)image.getSize().y )
 				continue;
 
 			Cell& c = colors[i*size+j];
 
 			if(c.first == CellType::Enabled)
 			{
-				if(image.getPixel(i, j) != c.second)
+				if(image.getPixel(x + i, y + j) != c.second)
+				{
 					return false;
+				}
 			}
 
 			if(c.first == CellType::Necessary)
@@ -39,8 +41,12 @@ bool Mask::compare(const sf::Image& image, int x, int y)
 	}
 
 	if(necessary < 1)
+	{
+		std::cout << "compare false necessary" << std::endl;
 		return false;
+	}
 
+	std::cout << "compare truuuuuuuuuuuuuuuuueeeeeeeeeeeeeeeeeeeeeeeeeeeee" << std::endl;
 	return true;
 }
 

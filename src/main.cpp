@@ -112,20 +112,17 @@ int main(int argc, char* argv[])
 	//////////////
 	//	Rotation
 	//////////////
-	/*
 	Mask mask33_test = 
     {
-        {CellType::Enabled, sf::Color::Black}, {CellType::Enabled, sf::Color::White}, {CellType::Disabled, sf::Color::Black}, {CellType::Disabled, sf::Color::Black},
-        {CellType::Enabled, sf::Color::White}, {CellType::Enabled, sf::Color::Black}, {CellType::Enabled, sf::Color::Black}, {CellType::Disabled, sf::Color::Black},
-        {CellType::Enabled, sf::Color::Black}, {CellType::Enabled, sf::Color::Black}, {CellType::Enabled, sf::Color::White}, {CellType::Disabled, sf::Color::Black},
-        {CellType::Enabled, sf::Color::White}, {CellType::Enabled, sf::Color::Black}, {CellType::Disabled, sf::Color::Black}, {CellType::Disabled, sf::Color::Black}
+        {CellType::Enabled, sf::Color::Black}, {CellType::Enabled, sf::Color::White}, {CellType::Disabled, sf::Color::Black},
+        {CellType::Enabled, sf::Color::White}, {CellType::Enabled, sf::Color::Black}, {CellType::Disabled, sf::Color::Black},
+        {CellType::Disabled, sf::Color::Black}, {CellType::Disabled, sf::Color::Black}, {CellType::Enabled, sf::Color::Black}
     };
 
     Mask mask33_test_rotated = mask33_test.rotate();
 
     mask33_test.print();
     mask33_test_rotated.print();
-    */
 
     // Processing
     std::thread repairingthread([&](){
