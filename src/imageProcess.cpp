@@ -72,25 +72,33 @@ sf::Image repairWellCompose(const sf::Image& im)
 
 sf::Image repairWellCompose3x3(const sf::Image& im)
 {
-    // // configuration 1
-    // Mask mask33_1 = {  { CellType::Enabled, sf::Color::Black }, {CellType::Enabled sf::Color::White}, { CellType::Disabled, sf::Color::Black}, 
-    //                 { CellType::Enabled, sf::Color::White }, {CellType::Enabled, sf::Color::Black}, { CellType::Disabled, sf::Color::Black}, 
-    //                 { CellType::Disabled, sf::Color::Black }, {CellType::Disabled, sf::Color::Black}, { CellType::Enabled, sf::Color::Black}   };
+    // configuration 1
+    Mask mask33_1 = {
+                        {CellType::Enabled, sf::Color::Black}, {CellType::Enabled, sf::Color::White}, {CellType::Disabled, sf::Color::Black},
+                        {CellType::Enabled, sf::Color::White}, {CellType::Enabled, sf::Color::Black}, {CellType::Disabled, sf::Color::Black},
+                        {CellType::Disabled, sf::Color::Black}, {CellType::Disabled, sf::Color::Black}, {CellType::Enabled, sf::Color::Black}
+                    };
     
-    // // configuration 2
-    // Mask mask33_2 = {  { CellType::Enabled, sf::Color::Black }, {CellType::Disabled, sf::Color::Black}, { CellType::Enabled, sf::Color::Black}, 
-    //                 { CellType::Enabled, sf::Color::Black }, {CellType::Disabled, sf::Color::Black}, { CellType::Enabled, sf::Color::Black}, 
-    //                 { CellType::Enabled, sf::Color::Black }, {CellType::Disabled, sf::Color::Black}, { CellType::Enabled, sf::Color::Black}   };
+    // configuration 2
+    Mask mask33_2 = {
+                        {CellType::Enabled, sf::Color::Black}, {CellType::Disabled, sf::Color::Black}, {CellType::Enabled, sf::Color::Black},
+                        {CellType::Enabled, sf::Color::Black}, {CellType::Disabled, sf::Color::Black}, {CellType::Enabled, sf::Color::Black},
+                        {CellType::Enabled, sf::Color::Black}, {CellType::Disabled, sf::Color::Black}, {CellType::Enabled, sf::Color::Black}
+                    };
 
-    // // configuration 3
-    // Mask mask33_3 = {  { CellType::Enabled, sf::Color::Black }, {CellType::Disabled, sf::Color::Black}, { CellType::Enabled, sf::Color::Black}, 
-    //                 { CellType::Enabled, sf::Color::Black }, {CellType::Disabled, sf::Color::Black}, { CellType::Enabled, sf::Color::Black}, 
-    //                 { CellType::Enabled, sf::Color::Black }, {CellType::Disabled, sf::Color::Black}, { CellType::Enabled, sf::Color::Black}   };
+    // configuration 3
+    Mask mask33_3 = {
+                        {CellType::Enabled, sf::Color::Black}, {CellType::Disabled, sf::Color::Black}, {CellType::Enabled, sf::Color::Black},
+                        {CellType::Enabled, sf::Color::Black}, {CellType::Disabled, sf::Color::Black}, {CellType::Enabled, sf::Color::Black},
+                        {CellType::Enabled, sf::Color::Black}, {CellType::Disabled, sf::Color::Black}, {CellType::Enabled, sf::Color::Black}
+                    };
 
-    // // configuration 4
-    // Mask mask33_4 = {  { CellType::Enabled, sf::Color::Black }, {CellType::Disabled, sf::Color::Black}, { CellType::Enabled, sf::Color::Black}, 
-    //                 { CellType::Enabled, sf::Color::Black }, {CellType::Disabled, sf::Color::Black}, { CellType::Enabled, sf::Color::Black}, 
-    //                 { CellType::Enabled, sf::Color::Black }, {CellType::Disabled, sf::Color::Black}, { CellType::Enabled, sf::Color::Black}   };
+    // configuration 4
+    Mask mask33_4 = {
+                        {CellType::Enabled, sf::Color::Black}, {CellType::Disabled, sf::Color::Black}, {CellType::Enabled, sf::Color::Black},
+                        {CellType::Enabled, sf::Color::Black}, {CellType::Disabled, sf::Color::Black}, {CellType::Enabled, sf::Color::Black},
+                        {CellType::Enabled, sf::Color::Black}, {CellType::Disabled, sf::Color::Black}, {CellType::Enabled, sf::Color::Black}
+                    };
     
     // repair
     sf::Image out = im;
