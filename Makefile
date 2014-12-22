@@ -18,7 +18,8 @@ PATH_LIBRARIES = -Lextlib/lib/x64
 OBJ_FILES = $(PATH_OBJ)/main.o \
 			$(PATH_OBJ)/imageProcess.o \
 			$(PATH_OBJ)/listener.o \
-			$(PATH_OBJ)/mask.o
+			$(PATH_OBJ)/mask.o \
+			$(PATH_OBJ)/programOptions.o
 
 GCC_OPTS = -std=c++11 -Wall
 
