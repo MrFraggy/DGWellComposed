@@ -23,6 +23,7 @@ int main(int argc, char* argv[])
     	std::cout << "-m [--method naive|3x3]:\tSpecify the algorithm to process the image." << std::endl;
     	std::cout << "\t\t\tAvailable: naive or 3x3" << std::endl;
     	std::cout << "-o [--output]:\tSpecify the result image to save in" << std::endl;
+    	std::cout << "-t [--threshold]\tSpecify the value for the binarization" << std::endl;
     	std::cout << "-s [--speed]:\tSpecify the speed of the processing" << std::endl;
     	return 0;
     }
@@ -45,7 +46,13 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 	
-	sf::Image binary = binarize(image, 127);
+	
+	int threshold = 127;
+	if(options.hasValue("-t"))
+		threshold = fromString<int>(options.getValue("-t"));
+	else if(options.hasValue("--threshold"))
+		threshold = fromString<int>(options.getValue("--threshold"));
+	sf::Image binary = binarize(image, threshold);
 
 
 	std::unique_ptr<Viewer> viewer(nullptr);
@@ -64,30 +71,13 @@ int main(int argc, char* argv[])
 			return -1;
 		}
 
-		viewer.reset(new Viewer(image, speed));
+		viewer.reset(new Viewer(binary, speed));
 		addListener(viewer.get());
 	}
 
-	//////////////
-	//	Tests
-	//////////////
-	//	Rotation
-	//////////////
-	Mask mask33_test = 
-    {
-        {CellType::Enabled, sf::Color::Black}, {CellType::Enabled, sf::Color::White}, {CellType::Disabled, sf::Color::Black},
-        {CellType::Enabled, sf::Color::White}, {CellType::Enabled, sf::Color::Black}, {CellType::Disabled, sf::Color::Black},
-        {CellType::Disabled, sf::Color::Black}, {CellType::Disabled, sf::Color::Black}, {CellType::Enabled, sf::Color::Black}
-    };
-
-    Mask mask33_test_rotated = mask33_test.rotate();
-
-//    mask33_test.print();
-//    mask33_test_rotated.print();
-
     // Processing
     std::thread repairingthread([&](){
-    	if(!isWellComposed(image))
+    	if(!isWellComposed(binary))
 	    {
 	    	auto func = repairWellCompose3x3;
 	    	if(options.hasValue("-m"))
@@ -97,11 +87,10 @@ int main(int argc, char* argv[])
 	    		if(options.getValue("--method") == "naive")
 	    			func = repairWellComposeNaive;
 
-	    	binary = func(image);
+	    	binary = func(binary);
 	    } else
 	    	std::cout << "Image already well composed!" << std::endl;
     });
-
 
     // On teste si on a un viewer car la fenêtre peut ne pas être lancée.
     if(viewer)

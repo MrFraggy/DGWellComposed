@@ -196,6 +196,9 @@ sf::Image repairWellCompose3x3(const sf::Image& im)
 
             for(auto l: listeners)
                     l->setImageModified(out, {(int)i+1,(int)j+1});
+
+            if(bStopped)
+                return out;
         }
     }
     return out;
@@ -208,9 +211,9 @@ bool isWellComposed(const sf::Image& im)
 
     sf::Color patternTest[4];
 
-    for(unsigned int i = 0; i<im.getSize().x ; ++i)
+    for(unsigned int i = 0; i<im.getSize().x-1; ++i)
     {
-        for(unsigned int j = 0; j<im.getSize().y; ++j)
+        for(unsigned int j = 0; j<im.getSize().y-1; ++j)
         {
             patternTest[0] = im.getPixel(i,j);
             patternTest[1] = im.getPixel(i+1,j);
