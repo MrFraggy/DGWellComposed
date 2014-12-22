@@ -72,7 +72,6 @@ sf::Image repairWellComposeNaive(const sf::Image& im)
 
 sf::Image repairWellCompose3x3(const sf::Image& im)
 {
-    bool repared = false;
     // All patterns necessary only square matrix
     // configuration 1
     Mask mask33_a = 
@@ -193,12 +192,6 @@ sf::Image repairWellCompose3x3(const sf::Image& im)
                     out.setPixel(i+1, j+1, sf::Color::White);
                     out.setPixel(i+1, j+2, sf::Color::White);
                 }
-            }
-
-            if(repared)
-            {
-                std::cout << "repared at : (" << i << ","<< j << ");" << std::endl;
-                repared = false;
             }
 
             for(auto l: listeners)
