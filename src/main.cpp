@@ -17,7 +17,7 @@ int main(int argc, char* argv[])
     if(options.hasValue("-h") || options.hasValue("--help"))
     {
     	std::cout << "Available options: " << std::endl;
-    	std::cout << "-g [--gui]:\tLanches a window which displays progress" << std::endl;
+    	std::cout << "-g [--gui]:\tLaunches a window which displays progress" << std::endl;
     	std::cout << "-h [--help]:\tDisplays help" << std::endl;
     	std::cout << "-i [--input]:\tSpecify the image to process" << std::endl;
     	std::cout << "-m [--method naive|3x3]:\tSpecify the algorithm to process the image." << std::endl;
