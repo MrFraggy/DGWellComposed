@@ -1,3 +1,5 @@
+articles/
+
 # Compiled Object files
 *.slo
 *.lo
@@ -23,6 +25,7 @@
 *.exe
 *.out
 *.app
+*.pdf
 
 bin/*
 !bin/README

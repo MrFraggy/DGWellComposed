@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <memory>
 #include <thread>
+#include <mask.hpp>
 
 class Viewer: public Listener
 {
@@ -82,11 +83,32 @@ int main(int argc, char* argv[])
 	std::unique_ptr<Viewer> viewer(new Viewer(image));
 	addListener(viewer.get());
 
+	//////////////
+	//	Tests
+	//////////////
+	//	Rotation
+	//////////////
+	/*
+	Mask mask33_test = 
+    {
+        {CellType::Enabled, sf::Color::Black}, {CellType::Enabled, sf::Color::White}, {CellType::Disabled, sf::Color::Black}, {CellType::Disabled, sf::Color::Black},
+        {CellType::Enabled, sf::Color::White}, {CellType::Enabled, sf::Color::Black}, {CellType::Enabled, sf::Color::Black}, {CellType::Disabled, sf::Color::Black},
+        {CellType::Enabled, sf::Color::Black}, {CellType::Enabled, sf::Color::Black}, {CellType::Enabled, sf::Color::White}, {CellType::Disabled, sf::Color::Black},
+        {CellType::Enabled, sf::Color::White}, {CellType::Enabled, sf::Color::Black}, {CellType::Disabled, sf::Color::Black}, {CellType::Disabled, sf::Color::Black}
+    };
+
+    Mask mask33_test_rotated = mask33_test.rotate();
+
+    mask33_test.print();
+    mask33_test_rotated.print();
+    */
+
     // Processing
     std::thread repairingthread([&](){
     	if(!isWellComposed(image))
 	    {
-	    	binary = repairWellComposeNaive(image);
+	    	// binary = repairWellComposeNaive(image);
+	    	binary = repairWellCompose3x3(image);
 	    } else
 	    	std::cout << "Well composed!" << std::endl;
     });

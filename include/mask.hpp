@@ -20,7 +20,9 @@ class Mask
 public:
 	Mask(int size);
 	Mask(std::initializer_list<Cell> list);
-	bool apply(const sf::Image& im, int i, int j);
+	bool compare(const sf::Image& im, int i, int j);
+	Mask rotate();
+	void print();
 
 protected:
 	std::vector<Cell> colors;

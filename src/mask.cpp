@@ -13,25 +13,81 @@ Mask::Mask(std::initializer_list<Cell> list) : colors(list)
 	size = static_cast<int>(std::sqrt(colors.size()));
 }
 
-bool Mask::apply(const sf::Image& image, int x, int y)
+bool Mask::compare(const sf::Image& image, int x, int y)
 {
-	for(int i = -size/2; i <= size/2; ++i)
-	{
-		for(int j = -size/2; j <= size/2; ++j)
-		{
-			if(	x + i < 0
-			|| 	x + i >= (int)image.getSize().x
-			|| 	y + j < 0
-			|| 	y + j >= (int)image.getSize().y)
-			{
-				continue;
-			}
-			int idx = (i+size/2)*size + (j+size/2);
-			Cell& c = colors[idx];
+	int necessary = 0;
 
-			if(c.first == CellType::Disabled && (image.getPixel(i, j) != c.second))
-				return false;
+	for(int i = 0; i < size; ++i)
+	{
+		for(int j = 0; j < size; ++j)
+		{
+			if(	x + i >= (int)image.getSize().x || y + j >= (int)image.getSize().y)
+				continue;
+
+			Cell& c = colors[i*size+j];
+
+			if(c.first == CellType::Enabled)
+			{
+				if(image.getPixel(i, j) != c.second)
+					return false;
+			}
+
+			if(c.first == CellType::Necessary)
+				if(image.getPixel(i, j) != c.second)
+					necessary++;
 		}
 	}
+
+	if(necessary < 1)
+		return false;
+
 	return true;
+}
+
+Mask Mask::rotate()
+{
+	Mask out(size);
+
+	for(int i = 0; i < size; ++i)
+	{
+		for(int j = 0; j < size; ++j)
+		{
+			out.colors[i*size+j] = colors[(size-j-1)*size+i];
+		}
+	}
+
+	return out;
+}
+
+void Mask::print()
+{
+	for(int i = 0; i < size; ++i)
+	{
+		for(int j = 0; j < size; ++j)
+		{
+			Cell& c = colors[i*size+j];
+
+			if(c.first == CellType::Necessary)
+			{
+				std::cout << "n ";
+			}
+			else if(c.first == CellType::Disabled)
+			{
+				std::cout << "d ";
+			}
+			else
+			{
+				if(c.second == sf::Color::Black)
+				{
+					std::cout << "1 ";
+				}
+				else
+				{
+					std::cout << "0 ";
+				}
+			}
+		}
+		std::cout << std::endl;
+	}
+	std::cout << std::endl;
 }

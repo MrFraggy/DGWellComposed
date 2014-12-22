@@ -4,7 +4,7 @@ void Listener::setMaskPosition(const sf::Vector2ui& pos)
 {
 	{
 		std::lock_guard<std::mutex> lk(listenerMutex);
-		std::cout << Mask.pos.x << " " << Mask.pos.y << std::endl;
+		// std::cout << Mask.pos.x << " " << Mask.pos.y << std::endl;
 		Mask.pos = pos;
 		onMaskModified();
 	}
