@@ -52,11 +52,12 @@ sf::Image repairWellComposeNaive(const sf::Image& im)
             if (patternTest[0]==pattern1[0] && patternTest[1]==pattern1[1] && patternTest[2]==pattern1[2] && patternTest[3]==pattern1[3])
             {
             	out.setPixel(i+1,j+1, sf::Color::White);
+                std::cout << "repared at : (" << i << ","<< j << ");" << std::endl;
             }
             else if (patternTest[0]==pattern2[0] && patternTest[1]==pattern2[1] && patternTest[2]==pattern2[2] && patternTest[3]==pattern2[3])
             {
             	out.setPixel(i+1,j+1, sf::Color::Black);
-               
+                std::cout << "repared at : (" << i << ","<< j << ");" << std::endl;
             }
 
              for(auto l: listeners)
@@ -71,42 +72,60 @@ sf::Image repairWellComposeNaive(const sf::Image& im)
 
 sf::Image repairWellCompose3x3(const sf::Image& im)
 {
+    bool repared = false;
+    // All patterns necessary only square matrix
     // configuration 1
-    Mask mask33_1 = {
-                        {CellType::Enabled, sf::Color::Black}, {CellType::Enabled, sf::Color::White}, {CellType::Disabled, sf::Color::Black},
-                        {CellType::Enabled, sf::Color::White}, {CellType::Enabled, sf::Color::Black}, {CellType::Disabled, sf::Color::Black},
-                        {CellType::Disabled, sf::Color::Black}, {CellType::Disabled, sf::Color::Black}, {CellType::Enabled, sf::Color::Black}
-                    };
+    Mask mask33_a = 
+    {
+        {CellType::Enabled, sf::Color::Black}, {CellType::Enabled, sf::Color::White}, {CellType::Disabled, sf::Color::Black},
+        {CellType::Enabled, sf::Color::White}, {CellType::Enabled, sf::Color::Black}, {CellType::Disabled, sf::Color::Black},
+        {CellType::Disabled, sf::Color::Black}, {CellType::Disabled, sf::Color::Black}, {CellType::Enabled, sf::Color::Black}
+    };
     
     // configuration 2
-    Mask mask33_2 = {
-                        {CellType::Enabled, sf::Color::Black}, {CellType::Disabled, sf::Color::Black}, {CellType::Enabled, sf::Color::Black},
-                        {CellType::Enabled, sf::Color::Black}, {CellType::Disabled, sf::Color::Black}, {CellType::Enabled, sf::Color::Black},
-                        {CellType::Enabled, sf::Color::Black}, {CellType::Disabled, sf::Color::Black}, {CellType::Enabled, sf::Color::Black}
-                    };
+    Mask mask33_b = 
+    {
+        {CellType::Enabled, sf::Color::Black}, {CellType::Enabled, sf::Color::White}, {CellType::Disabled, sf::Color::Black},
+        {CellType::Enabled, sf::Color::White}, {CellType::Enabled, sf::Color::Black}, {CellType::Necessary, sf::Color::White},
+        {CellType::Disabled, sf::Color::Black}, {CellType::Necessary, sf::Color::White}, {CellType::Enabled, sf::Color::White}
+    };
 
     // configuration 3
-    Mask mask33_3 = {
-                        {CellType::Enabled, sf::Color::Black}, {CellType::Disabled, sf::Color::Black}, {CellType::Enabled, sf::Color::Black},
-                        {CellType::Enabled, sf::Color::Black}, {CellType::Disabled, sf::Color::Black}, {CellType::Enabled, sf::Color::Black},
-                        {CellType::Enabled, sf::Color::Black}, {CellType::Disabled, sf::Color::Black}, {CellType::Enabled, sf::Color::Black}
-                    };
+    Mask mask33_c = 
+    {
+        {CellType::Enabled, sf::Color::Black}, {CellType::Enabled, sf::Color::White}, {CellType::Disabled, sf::Color::Black},
+        {CellType::Enabled, sf::Color::White}, {CellType::Enabled, sf::Color::Black}, {CellType::Enabled, sf::Color::Black},
+        {CellType::Enabled, sf::Color::White}, {CellType::Enabled, sf::Color::Black}, {CellType::Enabled, sf::Color::White}
+    };
 
     // configuration 4
-    Mask mask33_4 = {
-                        {CellType::Enabled, sf::Color::Black}, {CellType::Disabled, sf::Color::Black}, {CellType::Enabled, sf::Color::Black},
-                        {CellType::Enabled, sf::Color::Black}, {CellType::Disabled, sf::Color::Black}, {CellType::Enabled, sf::Color::Black},
-                        {CellType::Enabled, sf::Color::Black}, {CellType::Disabled, sf::Color::Black}, {CellType::Enabled, sf::Color::Black}
-                    };
+    Mask mask33_d = 
+    {
+        {CellType::Enabled, sf::Color::Black}, {CellType::Enabled, sf::Color::White}, {CellType::Disabled, sf::Color::Black},
+        {CellType::Enabled, sf::Color::White}, {CellType::Enabled, sf::Color::Black}, {CellType::Enabled, sf::Color::Black},
+        {CellType::Enabled, sf::Color::Black}, {CellType::Enabled, sf::Color::Black}, {CellType::Enabled, sf::Color::White}
+    };
+
+    // configuration 5
+    Mask mask33_e = 
+    {
+        {CellType::Enabled, sf::Color::Black}, {CellType::Enabled, sf::Color::White}, {CellType::Disabled, sf::Color::Black}, {CellType::Disabled, sf::Color::Black},
+        {CellType::Enabled, sf::Color::White}, {CellType::Enabled, sf::Color::Black}, {CellType::Enabled, sf::Color::Black}, {CellType::Disabled, sf::Color::Black},
+        {CellType::Enabled, sf::Color::Black}, {CellType::Enabled, sf::Color::Black}, {CellType::Enabled, sf::Color::White}, {CellType::Disabled, sf::Color::Black},
+        {CellType::Enabled, sf::Color::White}, {CellType::Enabled, sf::Color::Black}, {CellType::Disabled, sf::Color::Black}, {CellType::Disabled, sf::Color::Black}
+    };
+
+    Mask mask33_a_rotated = mask33_a.rotate();
+    Mask mask33_b_rotated = mask33_b.rotate();
+    Mask mask33_c_rotated = mask33_c.rotate();
+    Mask mask33_d_rotated = mask33_d.rotate();
+    Mask mask33_e_rotated = mask33_e.rotate();
     
-    // repair
+    // output image for repair
     sf::Image out = im;
 
-    sf::Color pattern2[9] = {sf::Color::White, sf::Color::Black, sf::Color::White, sf::Color::Black};
-    sf::Color patternTest[4];
-
     for(auto l: listeners)
-        l->setMaskSize({2,2});
+        l->setMaskSize({3,3});
 
     for(unsigned int j = 0; j<out.getSize().y-1; ++j)
     {
@@ -115,26 +134,74 @@ sf::Image repairWellCompose3x3(const sf::Image& im)
             for(auto l: listeners)
                 l->setMaskPosition({i,j});
 
-            patternTest[0] = out.getPixel(i,j);
-            patternTest[1] = out.getPixel(i+1,j);
-            patternTest[2] = out.getPixel(i+1,j+1);
-            patternTest[3] = out.getPixel(i,j+1);
- 
-           /* if (patternTest[0]==pattern1[0] && patternTest[1]==pattern1[1] && patternTest[2]==pattern1[2] && patternTest[3]==pattern1[3])
-            {
-                out.setPixel(i+1,j+1, sf::Color::White);
+            // Check all mask 3*3
+            if(mask33_a.compare(out, i, j))
+                out.setPixel(i+1, j+1, sf::Color::White);
 
-                std::cout << listeners.size() << std::endl; 
-            }
-            else */if (patternTest[0]==pattern2[0] && patternTest[1]==pattern2[1] && patternTest[2]==pattern2[2] && patternTest[3]==pattern2[3])
+            if(mask33_a_rotated.compare(out, i, j))
+                out.setPixel(i+1, j+1, sf::Color::White);
+
+            if(mask33_b.compare(out, i, j))
+                out.setPixel(i+1, j+1, sf::Color::White);
+
+            if(mask33_b_rotated.compare(out, i, j))
+                out.setPixel(i+1, j+1, sf::Color::White);
+
+            if(mask33_c.compare(out, i, j))
             {
-                out.setPixel(i+1,j+1, sf::Color::Black);
-                
-                std::cout << listeners.size() << std::endl; 
-               
+                // change only pixels needed
+                out.setPixel(i+1, j+1, sf::Color::White);
+                out.setPixel(i+1, j+2, sf::Color::White);
             }
 
-             for(auto l: listeners)
+            if(mask33_c_rotated.compare(out, i, j))
+            {
+                // change only pixels needed
+                out.setPixel(i+1, j+1, sf::Color::White);
+                out.setPixel(i+1, j+2, sf::Color::White);
+            }
+
+            if(mask33_d.compare(out, i, j))
+            {
+                if(mask33_e.compare(out, i, j))
+                {
+                    // change only pixels needed
+                    out.setPixel(i+1, j+1, sf::Color::White);
+                    out.setPixel(i, j+2, sf::Color::White);
+                    out.setPixel(i+1, j+2, sf::Color::White);
+                }
+                else
+                {
+                    // change only pixels needed
+                    out.setPixel(i+1, j+1, sf::Color::White);
+                    out.setPixel(i+1, j+2, sf::Color::White);
+                }
+            }
+
+            if(mask33_d_rotated.compare(out, i, j))
+            {
+                if(mask33_e_rotated.compare(out, i, j))
+                {
+                    // change only pixels needed
+                    out.setPixel(i+1, j+1, sf::Color::White);
+                    out.setPixel(i, j+2, sf::Color::White);
+                    out.setPixel(i+1, j+2, sf::Color::White);
+                }
+                else
+                {
+                    // change only pixels needed
+                    out.setPixel(i+1, j+1, sf::Color::White);
+                    out.setPixel(i+1, j+2, sf::Color::White);
+                }
+            }
+
+            if(repared)
+            {
+                std::cout << "repared at : (" << i << ","<< j << ");" << std::endl;
+                repared = false;
+            }
+
+            for(auto l: listeners)
                     l->setImageModified(out, {i+1,j+1});
         }
     }
@@ -159,12 +226,12 @@ bool isWellComposed(const sf::Image& im)
 
             if (patternTest[0]==pattern1[0] && patternTest[1]==pattern1[1] && patternTest[2]==pattern1[2] && patternTest[3]==pattern1[3])
             {
-                std::cout << "1 not well composed at : (" << i << ","<< j << ");" << std::endl;
+                std::cout << "not well composed at : (" << i << ","<< j << "); with pattern_1" << std::endl;
                 return false;
             }
             else if (patternTest[0]==pattern2[0] && patternTest[1]==pattern2[1] && patternTest[2]==pattern2[2] && patternTest[3]==pattern2[3])
             {
-                std::cout << "2 not well composed at : (" << i << ","<< j << ");" << std::endl;
+                std::cout << "not well composed at : (" << i << ","<< j << "); with pattern_2" << std::endl;
                 return false;
             }
         }
