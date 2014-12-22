@@ -125,6 +125,13 @@ int main(int argc, char* argv[])
     			bStopped = true;
     			break;
     		}
+    		else if(event.type == sf::Event::KeyPressed)
+    		{
+    			if(event.key.code == sf::Keyboard::Escape)
+    			{	bStopped = true;
+    				break;
+    	   		}
+    	   	}
     	}
     	viewer->display();
     }
