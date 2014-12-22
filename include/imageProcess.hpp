@@ -17,4 +17,6 @@ bool isWellComposed(const sf::Image& im);
 
 void addListener(Listener* l);
 
+extern bool bStopped;
+
 #endif // DG_IMAGEPROCESS_HPP

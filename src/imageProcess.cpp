@@ -52,19 +52,18 @@ sf::Image repairWellComposeNaive(const sf::Image& im)
             if (patternTest[0]==pattern1[0] && patternTest[1]==pattern1[1] && patternTest[2]==pattern1[2] && patternTest[3]==pattern1[3])
             {
             	out.setPixel(i+1,j+1, sf::Color::White);
-
-                std::cout << listeners.size() << std::endl; 
             }
             else if (patternTest[0]==pattern2[0] && patternTest[1]==pattern2[1] && patternTest[2]==pattern2[2] && patternTest[3]==pattern2[3])
             {
             	out.setPixel(i+1,j+1, sf::Color::Black);
-                
-                std::cout << listeners.size() << std::endl; 
                
             }
 
              for(auto l: listeners)
-                    l->setImageModified(out, sf::Vector2ui(i+1,j+1));
+                    l->setImageModified(out, sf::Vector2i(i+1,j+1));
+
+            if(bStopped)
+                return out;
         }
     }
 	return out;
@@ -136,7 +135,7 @@ sf::Image repairWellCompose3x3(const sf::Image& im)
             }
 
              for(auto l: listeners)
-                    l->setImageModified(out, sf::Vector2ui(i+1,j+1));
+                    l->setImageModified(out, {i+1,j+1});
         }
     }
     return out;
