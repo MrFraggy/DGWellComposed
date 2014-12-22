@@ -26,7 +26,7 @@ sf::Image binarize(const sf::Image& im, unsigned char treshold)
 	return image;
 }
 
-sf::Image repairWellCompose(const sf::Image& im)
+sf::Image repairWellComposeNaive(const sf::Image& im)
 {
     // repair
     sf::Image out = im;

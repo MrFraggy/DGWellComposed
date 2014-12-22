@@ -60,7 +60,7 @@ protected:
 	{
 		//std::cout << Mask.pos.x << " " << Mask.pos.y << std::endl;
 	}
-	
+
 	sf::Image& image;
 	sf::RenderWindow window;
 	sf::Texture texture;
@@ -86,7 +86,7 @@ int main(int argc, char* argv[])
     std::thread repairingthread([&](){
     	if(!isWellComposed(image))
 	    {
-	    	binary = repairWellCompose(image);
+	    	binary = repairWellComposeNaive(image);
 	    } else
 	    	std::cout << "Well composed!" << std::endl;
     });

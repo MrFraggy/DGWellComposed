@@ -9,7 +9,7 @@ class Listener;
 
 sf::Image binarize(const sf::Image& im, unsigned char treshold);
 
-sf::Image repairWellCompose(const sf::Image& im);
+sf::Image repairWellComposeNaive(const sf::Image& im);
 
 sf::Image repairWellCompose3x3(const sf::Image& im);
 
