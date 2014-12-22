@@ -9,7 +9,6 @@ Mask::Mask(int size) : size(size)
 
 Mask::Mask(std::initializer_list<Cell> list) : colors(list)
 {
-	std::cout << "constructed with a " << colors.size() << "-element list" << std::endl;
 	size = static_cast<int>(std::sqrt(colors.size()));
 }
 

@@ -20,6 +20,8 @@ int main(int argc, char* argv[])
     	std::cout << "-g [--gui]:\tLanches a window which displays progress" << std::endl;
     	std::cout << "-h [--help]:\tDisplays help" << std::endl;
     	std::cout << "-i [--input]:\tSpecify the image to process" << std::endl;
+    	std::cout << "-m [--method naive|3x3]:\tSpecify the algorithm to process the image." << std::endl;
+    	std::cout << "\t\t\tAvailable: naive or 3x3" << std::endl;
     	std::cout << "-o [--output]:\tSpecify the result image to save in" << std::endl;
     	std::cout << "-s [--speed]:\tSpecify the speed of the processing" << std::endl;
     	return 0;
@@ -80,17 +82,24 @@ int main(int argc, char* argv[])
 
     Mask mask33_test_rotated = mask33_test.rotate();
 
-    mask33_test.print();
-    mask33_test_rotated.print();
+//    mask33_test.print();
+//    mask33_test_rotated.print();
 
     // Processing
     std::thread repairingthread([&](){
     	if(!isWellComposed(image))
 	    {
-	    	// binary = repairWellComposeNaive(image);
-	    	binary = repairWellCompose3x3(image);
+	    	auto func = repairWellCompose3x3;
+	    	if(options.hasValue("-m"))
+	    		if(options.getValue("-m") == "naive")
+	    			func = repairWellComposeNaive;
+	    	if(options.hasValue("--method"))
+	    		if(options.getValue("--method") == "naive")
+	    			func = repairWellComposeNaive;
+
+	    	binary = func(image);
 	    } else
-	    	std::cout << "Well composed!" << std::endl;
+	    	std::cout << "Image already well composed!" << std::endl;
     });
 
 
