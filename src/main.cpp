@@ -1,110 +1,69 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <imageProcess.hpp>
-#include <listener.hpp>
-#include <unistd.h>
+#include <programOptions.hpp>
+#include <viewer.hpp>
+#include <convert.hpp>
 #include <memory>
 #include <thread>
 
 bool bStopped = false;
 
-class Viewer: public Listener
-{
-public:
-	Viewer(sf::Image& image) : 
-		image(image), 
-		window(sf::VideoMode(image.getSize().x,image.getSize().y, 32), "Non well-composed image repair viewer")
-	{
-		CurrentImage.image = image;
-		CurrentImage.pixel.x = 0;
-		CurrentImage.pixel.y = 0;
-		imageTex.create(image.getSize().x, image.getSize().y);
-		imageTex.update(image);
-		maskTex.create(1,1);
-		sf::Image i;
-		i.create(1,1,sf::Color::Red);
-		maskTex.update(i);
-		window.setSize({800,600});
-		bMaskModified = false;
-	}
-
-	void display()
-	{
-		window.clear();
-		{
-			std::lock_guard<std::mutex> lk(listenerMutex);
-			CurrentImage.image.setPixel(Mask.pos.x, Mask.pos.y, sf::Color::Red);
-			imageTex.update(CurrentImage.image);
-			sf::Sprite sprite(imageTex);
-			window.draw(sprite);
-
-			if(bMaskModified)
-				recreateMask();
-
-			sf::Sprite spriteMask(maskTex);
-			spriteMask.setPosition(Mask.pos.x-1, Mask.pos.y -1);
-			window.draw(spriteMask);
-		}
-		window.display();
-	}
-
-	bool isOpen()
-	{
-		return window.isOpen();
-	}
-
-	bool pollEvent(sf::Event& e)
-	{
-		return window.pollEvent(e);
-	}
-
-protected:
-
-	void recreateMask()
-	{
-		maskTex.create(Mask.size.x+2, Mask.size.y+2);
-		sf::Image m;
-		m.create(Mask.size.x+2, Mask.size.y+2, sf::Color(0,0,0,0));
-		for(int x = 0; x<Mask.size.x+2; ++x)
-			for(int y = 0; y<Mask.size.y+2; ++y)
-			{
-				if(x == 0 || y == 0 || x == Mask.size.x+1 || y == Mask.size.y +1)
-					m.setPixel(x,y,sf::Color::Red);
-			}
-		
-		maskTex.update(m);
-		bMaskModified = false;
-	}
-	void onImageModified() {}
-	void onMaskMoved() {}
-
-	void onMaskModified() 
-	{
-		bMaskModified = true;
-	}
-
-	sf::Image& image;
-	sf::RenderWindow window;
-	sf::Texture imageTex, maskTex;
-	sf::Image maskImage;
-	bool bMaskModified;
-};
-
 int main(int argc, char* argv[])
 {
-    // Get image
+	ProgramOptions options(argv+1, argc-1);
+    
+    if(options.hasValue("-h") || options.hasValue("--help"))
+    {
+    	std::cout << "Available options: " << std::endl;
+    	std::cout << "-g [--gui]:\tLanches a window which displays progress" << std::endl;
+    	std::cout << "-h [--help]:\tDisplays help" << std::endl;
+    	std::cout << "-i [--input]:\tSpecify the image to process" << std::endl;
+    	std::cout << "-o [--output]:\tSpecify the result image to save in" << std::endl;
+    	std::cout << "-s [--speed]:\tSpecify the speed of the processing" << std::endl;
+    	return 0;
+    }
+
 	sf::Image image;
-	if(argc > 1)
+	// On vérifie que l'utilisateur a bien spécifié une image en entrée
+	if(options.hasValue("-i") || options.hasValue("--input"))
 	{
-		image.loadFromFile(std::string(argv[1]));
+		std::string im;
+		if(options.hasValue("-i"))
+			im = options.getValue("-i");
+		else 
+			im = options.getValue("--input");
+		image.loadFromFile(std::string(im));
 	}
 	else
-		image.create(128,128,sf::Color::Green);
-
+	{
+		std::cerr << "You must specify an input image with -i [--input] option." << std::endl;
+		std::cerr << "See -h [--help] for more" << std::endl;
+		return -1;
+	}
+	
 	sf::Image binary = binarize(image, 127);
 
-	std::unique_ptr<Viewer> viewer(new Viewer(image));
-	addListener(viewer.get());
+
+	std::unique_ptr<Viewer> viewer(nullptr);
+
+	// On vérifie si on a demandé la fenêtre
+	if(options.hasValue("-g") || options.hasValue("--gui"))
+	{
+		int speed = 10;
+		if(options.hasValue("-s"))
+			speed = fromString<int>(options.getValue("-s"));
+		else if(options.hasValue("--speed"))
+			speed = fromString<int>(options.getValue("--speed"));
+		if(speed <= 0 ||speed > 100)
+		{
+			std::cerr << "Speed must be in range [1,100]" << std::endl;
+			return -1;
+		}
+
+		viewer.reset(new Viewer(image, speed));
+		addListener(viewer.get());
+	}
 
     // Processing
     std::thread repairingthread([&](){
@@ -115,37 +74,47 @@ int main(int argc, char* argv[])
 	    	std::cout << "Well composed!" << std::endl;
     });
 
-    while(viewer->isOpen() && !bStopped)
-    {
-    	sf::Event event;
-    	while(viewer->pollEvent(event))
-    	{
-    		if(event.type == sf::Event::Closed)
-    		{
-    			bStopped = true;
-    			break;
-    		}
-    		else if(event.type == sf::Event::KeyPressed)
-    		{
-    			if(event.key.code == sf::Keyboard::Escape)
-    			{	bStopped = true;
-    				break;
-    	   		}
-    	   	}
-    	}
-    	viewer->display();
-    }
 
-    repairingthread.join();
-    // Save image
-	if(argc > 2)
-	{
-		binary.saveToFile(std::string(argv[2]));
+    // On teste si on a un viewer car la fenêtre peut ne pas être lancée.
+    if(viewer)
+    {
+	    while(viewer->isOpen() && !bStopped)
+	    {
+	    	sf::Event event;
+	    	while(viewer->pollEvent(event))
+	    	{
+	    		if(event.type == sf::Event::Closed)
+	    		{
+	    			bStopped = true;
+	    			break;
+	    		}
+	    		else if(event.type == sf::Event::KeyPressed)
+	    		{
+	    			if(event.key.code == sf::Keyboard::Escape)
+	    			{	bStopped = true;
+	    				break;
+	    	   		}
+	    	   	}
+	    	}
+	    	viewer->display();
+	    }
+	    viewer->setSpeed(100);
 	}
-	else
-    {
-		binary.saveToFile("bin/out.png");
-    }
 
+	// La magie du multithreading: on attend que l'algo
+	// ait fini de travailler.
+    repairingthread.join();
+
+
+    // Save image
+    std::string im = "bin/out.png";
+	if(options.hasValue("-o"))
+		im = options.getValue("-o");
+	else if(options.hasValue("--output"))
+		im = options.getValue("--output");
+
+	binary.saveToFile(im);
+
+	std::cout << "Processed image saved: " << im << std::endl;
 	return 0;
 }

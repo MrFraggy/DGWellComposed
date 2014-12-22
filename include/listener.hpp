@@ -13,6 +13,7 @@
 class Listener
 {
 public:
+	Listener(unsigned int speed) : iSpeed(speed) {}
 	virtual ~Listener() {};
 
 	void setMaskPosition(const sf::Vector2i& pos);
@@ -20,6 +21,8 @@ public:
 	void setMaskSize(const sf::Vector2i& size);
 
 	void setImageModified(const sf::Image& image, const sf::Vector2i& pos);
+
+	void setSpeed(int speed) { iSpeed = speed; }
 
 protected:
 	virtual void onMaskMoved() = 0;
@@ -36,6 +39,7 @@ protected:
 	} CurrentImage;
 
 	std::mutex listenerMutex;
+	unsigned int iSpeed;
 };
 
 
