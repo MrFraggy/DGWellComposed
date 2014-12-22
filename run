@@ -1,3 +1,3 @@
 #set x64 or x86 depending on your compiler 
-export LD_LIBRARY_PATH=extlib/lib/x64/fac
+export LD_LIBRARY_PATH=extlib/lib/x64
 ./bin/project3 $1 $2

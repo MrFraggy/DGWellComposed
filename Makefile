@@ -12,7 +12,7 @@ LIBRARIES = -lsfml-graphics \
 PATH_INCLUDE =	-Iinclude \
 				-Iextlib/include
 
-PATH_LIBRARIES = -Lextlib/lib/x64/fac
+PATH_LIBRARIES = -Lextlib/lib/x64
 
 #lister les fichiers à compiler
 OBJ_FILES = $(PATH_OBJ)/main.o \

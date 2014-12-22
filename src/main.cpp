@@ -60,7 +60,7 @@ protected:
 	{
 		//std::cout << Mask.pos.x << " " << Mask.pos.y << std::endl;
 	}
-//ok gros
+	
 	sf::Image& image;
 	sf::RenderWindow window;
 	sf::Texture texture;

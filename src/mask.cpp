@@ -3,7 +3,7 @@
 Mask::Mask(int size) : size(size)
 {
 	for(int i = 0; i < size*size; ++i)
-		colors.push_back({Disabled, sf::Color::Black});
+		colors.push_back({CellType::Disabled, sf::Color::Black});
 }
 
 Mask::Mask(std::initializer_list<Cell> list) : colors(list)
@@ -27,7 +27,7 @@ bool Mask::apply(const sf::Image& image, int x, int y)
 			int idx = (i+size/2)*size + (j+size/2);
 			Cell& c = colors[idx];
 
-			if(c.first && image.getPixel(i, j) != c.second)
+			if(c.first == CellType::Disabled && (image.getPixel(i, j) != c.second))
 				return false;
 		}
 	}
