@@ -10,33 +10,29 @@
 #include <chrono>
 #include <iostream>
 
-namespace sf
-{
-	typedef Vector2<unsigned int> Vector2ui;
-}
-
 class Listener
 {
 public:
 	virtual ~Listener() {};
 
-	void setMaskPosition(const sf::Vector2ui& pos);
+	void setMaskPosition(const sf::Vector2i& pos);
 
-	void setMaskSize(const sf::Vector2ui& size);
+	void setMaskSize(const sf::Vector2i& size);
 
-	void setImageModified(const sf::Image& image, const sf::Vector2ui& pos);
+	void setImageModified(const sf::Image& image, const sf::Vector2i& pos);
 
 protected:
+	virtual void onMaskMoved() = 0;
 	virtual void onMaskModified() = 0;
 	virtual void onImageModified() = 0;
 
 	struct {
-		sf::Vector2ui size, pos;
+		sf::Vector2i size, pos;
 	} Mask;
 
 	struct {
 		sf::Image image;
-		sf::Vector2ui pixel;
+		sf::Vector2i pixel;
 	} CurrentImage;
 
 	std::mutex listenerMutex;
